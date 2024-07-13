@@ -80,9 +80,9 @@
     {
       "cell_type": "markdown",
       "source": [
-        "**EN : JUST CLICK RUN CELL AND ALL WILL BE AUTOMATED**\n",
+        "**EN : SELECT ONE, IF YOU WANT TO REPLACE OTHER MODELS, SELECT ONE OF THE CELL, AND CLICK RUN CELL**\n",
         "\n",
-        "**ID :KLIK RUN PADA CELL, MAKA SEMUA AKAN BERJALAN OTOMATIS**"
+        "**ID :PILIH SALAH SATU, JIKA MAU MENGGANTI MODEL LAIN, PILIH SALAH SATU SEL, DAN KLIK RUN SEL**"
       ],
       "metadata": {
         "id": "rcMaeB3Diqxr"
@@ -91,8 +91,8 @@
     {
       "cell_type": "code",
       "source": [
-        "#@title Setup Model\n",
-        "# @markdown IF U WANT TO USE ANOTHER MODEL, GO TO [HERE](https://huggingface.co/models?pipeline_tag=text-to-image&sort=trending), MAKE SURE THE MODEL HAVE A SAFETENSORS FILE\n",
+        "#@title Realisian Model\n",
+        "# @markdown **Realisian Model** [OUTPUT EXAMPLE](https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/ab5b700f-1cc6-408a-bac2-1d3cc38be280/width=450/00001-20230712095453.jpeg)\n",
         "\n",
         "import mediapy as media\n",
         "import random\n",
@@ -101,19 +101,78 @@
         "\n",
         "from diffusers import DiffusionPipeline\n",
         "\n",
-        "model = \"digiplay/Realisian_v5\" # @param [\"digiplay/Realisian_v5\", \"stabilityai/stable-diffusion-xl-base-1.0\", \"hakurei/waifu-diffusion\", \"Linaqruf/anything-v3.0\"]\n",
-        "\n",
         "pipe = DiffusionPipeline.from_pretrained(\n",
-        "    model,\n",
+        "    \"digiplay/Realisian_v5\",\n",
         "    torch_dtype=torch.float16,\n",
-        "    safety_checker=None,\n",
-        "    requires_safety_checker=False\n",
-        ")\n",
+        "    use_safetensors=True,\n",
+        "    variant=\"fp16\",\n",
+        "    safety_checker = None,\n",
+        "    requires_safety_checker = False\n",
+        "    )\n",
         "\n",
-        "pipe = pipe.to(\"cuda\")  # If you have a GPU for acceleration\n"
+        "pipe = pipe.to(\"cuda\")"
       ],
       "metadata": {
         "id": "bG2hkmSEvByV"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#@title WAIFU DIFFUSION MODEL\n",
+        "# @markdown **WAIFU DIFFUSION MODEL** [OUTPUT EXAMPLE](https://user-images.githubusercontent.com/26317155/210155933-db3a5f1a-1ec3-4777-915c-6deff2841ce9.png)\n",
+        "import mediapy as media\n",
+        "import random\n",
+        "import sys\n",
+        "import torch\n",
+        "\n",
+        "from diffusers import DiffusionPipeline\n",
+        "\n",
+        "pipe = DiffusionPipeline.from_pretrained(\n",
+        "    \"hakurei/waifu-diffusion\",\n",
+        "    torch_dtype=torch.float16,\n",
+        "    use_safetensors=True,\n",
+        "    variant=\"fp16\",\n",
+        "    safety_checker = None,\n",
+        "    requires_safety_checker = False\n",
+        "    )\n",
+        "\n",
+        "pipe = pipe.to(\"cuda\")"
+      ],
+      "metadata": {
+        "id": "d86QlXcsegBo"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#@title ORANGEMIX MODEL\n",
+        "#@markdown **ORANGE MIX MODEL** [OUTPUT EXAMPLE](https://raw.githubusercontent.com/WarriorMama777/imgup/2c840982550fab41f45ba4b5aedbd3d84ddf2390/img/AOM3/img_sanmples_AOM3_01_comp001.webp)\n",
+        "\n",
+        "import mediapy as media\n",
+        "import random\n",
+        "import sys\n",
+        "import torch\n",
+        "\n",
+        "from diffusers import StableDiffusionPipeline\n",
+        "\n",
+        "pipe = StableDiffusionPipeline.from_single_file(\n",
+        "    \"https://huggingface.co/WarriorMama777/OrangeMixs/blob/main/Models/AbyssOrangeMix3/AOM3_orangemixs.safetensors\",\n",
+        "    torch_dtype=torch.float16,\n",
+        "    use_safetensors=True,\n",
+        "    variant=\"fp16\",\n",
+        "    safety_checker = None,\n",
+        "    requires_safety_checker = False\n",
+        "    )\n",
+        "\n",
+        "pipe = pipe.to(\"cuda\")"
+      ],
+      "metadata": {
+        "id": "hV58WCxSTlwz"
       },
       "execution_count": null,
       "outputs": []
@@ -133,12 +192,12 @@
         "# @title PROMPT, GUNAKAN BAHASA INGGRIS / USE ENGLISH { display-mode: \"form\" }\n",
         "import os\n",
         "prompt = \"\" #@param {type:\"string\"}\n",
-        "seed = 4329492846 # @param {type:\"slider\", min:0, max:9000000000, step:1}\n",
+        "seed = random.randint(0, sys.maxsize)\n",
         "\n",
         "negative_prompt = \"bad-picture-chill-75v, ng_deepnegative_v1_75t, badhandv4, (worst quality:2), (low quality:2), (normal quality:2), (lowres:2), (bad anatomy:2), (bad hands:2), (watermark:2), (mole:1.5), (freckles:1.5)\" #@param {type:\"string\"}\n",
         "\n",
-        "width = 512  #@param {type:\"slider\", min:8, max:2048, step:8}\n",
-        "height = 736  #@param {type:\"slider\", min:8, max:2048, step:8}\n",
+        "width = 512  #@param {type:\"integer\"}\n",
+        "height = 1024  #@param {type:\"integer\"}\n",
         "\n",
         "# Mengambil nilai dari widget param\n",
         "width = int(width)\n",
@@ -181,7 +240,7 @@
         "images[0].save(new_filename)\n",
         "\n",
         "# Menampilkan gambar\n",
-        "media.show_images(images)"
+        "media.show_images(images)\n"
       ],
       "metadata": {
         "id": "AUc4QJfE-uR9"
